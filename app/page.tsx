@@ -3,6 +3,8 @@ import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import PortfolioGallery from "@/components/PortfolioGallery";
 
+export const instant = false;
+
 const services = [
   {
     number: "01",
