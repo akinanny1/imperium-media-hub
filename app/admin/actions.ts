@@ -89,38 +89,41 @@ export async function deleteCategory(formData: FormData) {
   revalidatePath("/admin");
 }
 
+
 export async function addProject(formData: FormData) {
   const supabase = await getAdminClient();
 
   const title = String(formData.get("title") || "").trim();
   const description = String(formData.get("description") || "").trim();
   const categoryId = String(formData.get("category_id") || "");
-  const image = formData.get("image");
+  const file = formData.get("image");
 
-  if (!title || !description || !(image instanceof File) || image.size === 0) {
-    throw new Error("Please provide a title, description and project image.");
+  if (
+    !title ||
+    !description ||
+    !(file instanceof File) ||
+    file.size === 0
+  ) {
+    throw new Error("Please provide a title, description and project file.");
   }
 
-  if (!image.type.startsWith("image/")) {
-    throw new Error("Please upload a valid image.");
+  const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("File size must not exceed 50 MB.");
   }
 
-  if (image.size > 5 * 1024 * 1024) {
-    throw new Error("Image size must not exceed 5 MB.");
-  }
-
-  const extension = image.name.split(".").pop()?.toLowerCase() || "jpg";
-
-  if (!["jpg", "jpeg", "png", "webp"].includes(extension)) {
-    throw new Error("Only JPG, PNG and WebP images are supported.");
-  }
+  const originalExtension = file.name.split(".").pop()?.toLowerCase() || "";
+  const extension = /^[a-z0-9]{1,10}$/.test(originalExtension)
+    ? originalExtension
+    : "bin";
 
   const fileName = `${crypto.randomUUID()}.${extension}`;
 
   const { error: uploadError } = await supabase.storage
     .from("portfolio")
-    .upload(fileName, image, {
-      contentType: image.type,
+    .upload(fileName, file, {
+      contentType: file.type || "application/octet-stream",
       upsert: false,
     });
 

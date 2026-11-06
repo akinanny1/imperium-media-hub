@@ -201,16 +201,15 @@ export default async function AdminDashboard() {
               </label>
 
               <input
-                type="file"
-                name="image"
-                required
-                accept="image/jpeg,image/png,image/webp"
-                className="w-full rounded-lg border border-gray-600 bg-[#08152d] p-3 text-sm text-gray-300"
-              />
+  type="file"
+  name="image"
+  required
+  className="w-full rounded-lg border border-gray-600 bg-[#08152d] p-3 text-sm text-gray-300"
+/>
 
               <p className="mt-2 text-xs text-gray-400">
-                JPG, PNG or WebP. Maximum file size: 5 MB.
-              </p>
+  All file types supported. Maximum file size: 50 MB.
+</p>
             </div>
 
             <button
